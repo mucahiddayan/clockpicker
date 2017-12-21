@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <link rel="stylesheet" href="clockpicker.css" />
+    <script type="text/javascript">
+
+        let templateFile = (name) => {
+            return name + '.html';
+        }
+        let app = angular.module('egal', []);
+
+        app.controller('egalController', ['$scope', ($scope) => {
+            $scope.obj = {
+                date: 0
+            };
+        }]);
+
+        app.directive('clockpicker', ['$document', ($document) => {
+
+            let link = (scope, element, attributes, controllers) => {
+                const date = {
+                    setHours: hours => {
+                        date.hours = hours > 9 ? hours : '0' + hours;
+                    },
+                    setMinutes: minutes => {
+                        date.minutes = minutes > 9 ? minutes : '0' + minutes;
+                    },
+                    getHours: () => {
+                        return date.hours;
+                    },
+                    getMinutes: () => {
+                        return date.minutes;
+                    },
+                    getDuration: (stringify=true) => {
+                        return stringify?JSON.stringify({hour:date.getHours(),minute:date.getMinutes()}):`${date.hours}:${date.minutes}`;
+                    },                    
+                    minuteToDegree: (value) => value * 6,
+                    hourToDegree: (value) => value * 30,
+                };
+
+                let convertToNumber = val =>{
+                    return isNaN(parseInt(val))?0:parseInt(val);
+                    
+                }
+
+                scope.time = {
+                    hour: 0,
+                    minute: 15,
+                    validateHour: () => {
+                        let hour = convertToNumber(scope.time.hour);
+                        hour %= 24;
+                        if (hour < 0) hour += 24;
+                        scope.time.hour = hour;
+                        scope.clock.update();
+                    },
+                    validateMinute: () => {
+                        let minute = convertToNumber(scope.time.minute);
+                        minute %= 60;
+                        if (minute < 0) minute += 60;
+                        scope.time.minute = minute;
+                        scope.clock.update();
+                    },
+                    update: () => {
+                        date.setHours(scope.time.hour);
+                        date.setMinutes(scope.time.minute);
+                        scope.cpModel = date.getDuration();
+                    },
+                    value: null
+                };
+
+                scope.clock = {
+                    minuteHand: { 'transform': `rotate(${date.minuteToDegree(15)}deg)` },
+                    hourHand: { 'transform': `rotate(${date.hourToDegree(12)}deg)` },
+                    update: () => {
+                        scope.clock.minuteHand = { 'transform': `rotate(${date.minuteToDegree(scope.time.minute)}deg)` };
+                        scope.clock.hourHand = { 'transform': `rotate(${date.hourToDegree(scope.time.hour)}deg)` };
+                    },
+                    open: () => {
+                        scope.clock.opened = true;
+                        scope.cpModel = null;
+                    },
+                    close:()=>{
+                        scope.clock.opened = false;
+                    },
+                    done: () => {
+                        scope.time.update();
+                        scope.clock.close();
+                    },
+                    opened: false,
+                }
+
+                scope.prevent = () => {
+                    scope.clock.open();
+                }
+
+                $document.bind('keypress, keydown',event=>{
+                    console.log(event.which,event.which == 27);
+                    if(event.which == 27){ // escape
+                        scope.$apply(scope.clock.close())
+                        console.log(scope.clock.opened);
+                    }
+                    if(event.which == 13){
+                        scope.$apply(scope.clock.done());
+                    }
+                });
+
+                let destroy  = () => {
+                    $document.unbind('keypress');
+                }
+
+                scope.$on('$destroy',()=>{
+                    destroy();
+                });
+            }
+
+            let templateUrl = () => templateFile('clockpicker');
+
+            return {
+                restrict: 'E',
+                scope: {
+                    cpModel: '=?',
+                    cpPlaceholder: '@?'
+                },
+                templateUrl,
+                link,
+            };
+        }]);
+
+    </script>
+    <title>Document</title>
+</head>
+
+<body ng-app="egal" ng-controller="egalController">
+    <clockpicker cp-model="obj.date" cp-placeholder="Duration"></clockpicker>
+    <span ng-bind="JSON.parse(obj.date).hour"></span>
+</body>
+
+</html>
