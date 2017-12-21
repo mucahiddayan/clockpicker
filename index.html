@@ -68,7 +68,7 @@
                     update: () => {
                         date.setHours(scope.time.hour);
                         date.setMinutes(scope.time.minute);
-                        scope.cpModel = date.getDuration();
+                        scope.cpModel = date.getDuration(false);
                     },
                     value: null
                 };
@@ -137,7 +137,7 @@
 
 <body ng-app="egal" ng-controller="egalController">
     <clockpicker cp-model="obj.date" cp-placeholder="Duration"></clockpicker>
-    <span ng-bind="JSON.parse(obj.date).hour"></span>
+    <span ng-bind="obj.date"></span>
 </body>
 
 </html>

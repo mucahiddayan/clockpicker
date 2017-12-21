@@ -1,22 +1,25 @@
 <div class="clockpicker-wrapper">
-    <input id="clockpicker-input" type="text" ng-model="cpModel" ng-click="clock.open()" ng-keypress="prevent()"  ng-show="!clock.opened">
-    <div class="clockpicker" ng-form name="clockpicker" ng-attr-placeholder="cpPlaceholder" ng-show="clock.opened" ng-attr-data-hour="time.hour" ng-attr-data-minute="time.minute" />
-        <div class="hour-wrapper cp-item">
-            <input autofocus type="number" name="hour" id="hour" ng-model-options="{ debounce: 0 }"  ng-change="time.validateHour()" ng-model="time.hour"/>
-        </div>
-        <span class="clock-splitter">:</span>
-        <div class="minute-wrapper cp-item">
-            <input type="number" name="minute" id="minute" ng-model-options="{ debounce: 0 }" ng-change="time.validateMinute()" ng-model="time.minute"/>
-        </div>
-        <div class="clock-preview">
-            <svg viewBox="0 0 100 100">
-                <g transform="translate(50,50)" class="clock">
-                    <circle class="clock-frame"></circle>
-                    <line y1="2" y2="-30" ng-style="clock.hourHand" class="hour-hand" title="{{clock.hourHand}}"></line>
-                    <line y1="2" y2="-40" ng-style="clock.minuteHand" class="minute-hand" title="{{clock.minuteHand}}"></line>
-                </g>
-            </svg>
-        </div>
-        <i class="button" ng-click="clock.done()">Done</i>
+    <div class="clock-preview" ng-click="clock.open()" title="{{cpModel}}">
+        <svg viewBox="0 0 100 100">
+            <g transform="translate(50,50)" class="clock">
+                <circle class="clock-frame"></circle>
+                <line y1="2" y2="-30" ng-style="clock.hourHand" class="hour-hand" title="{{clock.hourHand}}"></line>
+                <line y1="2" y2="-40" ng-style="clock.minuteHand" class="minute-hand" title="{{clock.minuteHand}}"></line>
+            </g>
+        </svg>
     </div>
+    <input id="clockpicker-input" type="text" ng-model="cpModel" ng-click="clock.open()" ng-keypress="prevent()" ng-show="false">
+    <div class="clockpicker" ng-form name="clockpicker" ng-attr-placeholder="cpPlaceholder" ng-show="clock.opened" ng-attr-data-hour="time.hour"
+        ng-attr-data-minute="time.minute" />
+    <div class="hour-wrapper cp-item">
+        <input autofocus type="number" name="hour" id="hour" ng-model-options="{ debounce: 0 }" ng-change="time.validateHour()" ng-model="time.hour"
+        />
+    </div>
+    <span class="clock-splitter">:</span>
+    <div class="minute-wrapper cp-item">
+        <input type="number" name="minute" id="minute" ng-model-options="{ debounce: 0 }" ng-change="time.validateMinute()" ng-model="time.minute"
+        />
+    </div>
+    <i class="button" ng-click="clock.done()">Done</i>
+</div>
 </div>
