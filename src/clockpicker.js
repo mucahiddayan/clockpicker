@@ -14,7 +14,7 @@ clockPicker.controller('clockpickerController', ['$scope', ($scope) => {
     };
 }]);
 
-clockPicker.directive('clockpicker', ['$document', ($document) => {
+clockPicker.directive('clockpicker', ['$document', '$window', ($document, $window) => {
 
     let link = (scope, element, attributes, controllers) => {
         const date = {
@@ -40,6 +40,19 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
         let convertToNumber = val => {
             return isNaN(parseInt(val)) ? 0 : parseInt(val);
 
+        }
+
+        let style = () => {
+            let elementBoundingClientRect = element[0].getBoundingClientRect()
+            let clockStyle = {};
+            if ($window.innerWidth - elementBoundingClientRect.left < 235) {
+                clockStyle.right =  '10px';
+            }
+            if ($window.innerHeight - elementBoundingClientRect.bottom  < 60){
+                clockStyle.marginTop = '-105px';
+            }
+            
+            scope.clock.style = clockStyle;
         }
 
         scope.time = {
@@ -74,6 +87,10 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
                 scope.clock.minuteHand = { 'transform': `rotate(${date.minuteToDegree(scope.time.minute)}deg)` };
                 scope.clock.hourHand = { 'transform': `rotate(${date.hourToDegree(scope.time.hour)}deg)` };
             },
+            toggle: () => {
+                scope.clock.opened = !scope.clock.opened;
+                style();
+            },
             open: () => {
                 scope.clock.opened = true;
                 scope.cpModel = null;
@@ -85,6 +102,7 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
                 scope.time.update();
                 scope.clock.close();
             },
+            style: {},
             opened: false,
         }
 
@@ -112,9 +130,12 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
         });
     }
 
-    let template = (element, attribute) => `
+    let template = (element, attribute) =>
+        `
     <div class="clockpicker-wrapper">
-    <div class="clock-preview" ng-click="clock.open()" title="{{cpModel}}">
+    <div class="clock-preview"
+         ng-click="clock.toggle()" 
+         title="{{cpModel}}">
         <svg viewBox="0 0 100 100">
             <g transform="translate(50,50)" class="clock">
                 <circle class="clock-frame"></circle>
@@ -123,8 +144,13 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
             </g>
         </svg>
     </div>
-    <div class="clockpicker" ng-form name="clockpicker" ng-attr-placeholder="cpPlaceholder" ng-show="clock.opened" ng-attr-data-hour="time.hour"
-        ng-attr-data-minute="time.minute">
+    <div class="clockpicker" 
+         ng-form name="clockpicker" 
+         ng-attr-placeholder="cpPlaceholder" 
+         ng-show="clock.opened" 
+         ng-style="clock.style"
+         ng-attr-data-hour="time.hour"
+         ng-attr-data-minute="time.minute">
         <div class="hour-wrapper cp-item">
             <input autofocus type="number" name="hour" id="hour" ng-model-options="{ debounce: 0 }" ng-change="time.validateHour()" ng-model="time.hour"
             />
@@ -136,7 +162,8 @@ clockPicker.directive('clockpicker', ['$document', ($document) => {
         </div>
         <i class="button" ng-click="clock.done()">Done</i>
     </div>
-</div>`;
+</div>
+`;
 
     return {
         restrict: 'E',

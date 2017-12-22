@@ -7,14 +7,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
     <link rel="stylesheet" href="src/clockpicker.css" />
-    
+    <style>
+        /* clockpicker.ng-isolate-scope {
+            float: right;
+            position: fixed;
+            bottom:0px;
+        } */
+    </style>
+
     <script type="text/javascript" src="src/clockpicker.js"></script>
     <script type="text/javascript">
 
-        var app = angular.module('test',['clockPicker']);
-        app.controller('testController',['$scope',($scope)=>{
+        var app = angular.module('test', ['clockPicker']);
+        app.controller('testController', ['$scope', ($scope) => {
             $scope.obj = {
-                date:0,
+                date: 0,
             }
             $scope.templateUrl = 'test';
         }]);
@@ -24,7 +31,7 @@
 </head>
 
 <body ng-app="test" ng-controller="testController">
-    <clockpicker cp-model="obj.date" cp-placeholder="Duration" cp-template-url="templateUrl"/>
+    <clockpicker cp-model="obj.date" cp-placeholder="Duration" cp-template-url="templateUrl" />
     <span ng-bind="obj.date"></span>
 </body>
 
