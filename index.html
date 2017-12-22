@@ -31,8 +31,9 @@
 </head>
 
 <body ng-app="test" ng-controller="testController">
-    <clockpicker cp-model="obj.date" cp-placeholder="Duration" cp-template-url="templateUrl" />
+    <clockpicker cp-model="obj.date" cp-placeholder="Duration" ></clockpicker>    
     <span ng-bind="obj.date"></span>
+    <clockpicker cp-model="obj.date" cp-placeholder="Duration" cp-label="Cooking Time"></clockpicker>
 </body>
 
 </html>

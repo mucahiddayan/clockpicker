@@ -46,13 +46,17 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             let elementBoundingClientRect = element[0].getBoundingClientRect()
             let clockStyle = {};
             if ($window.innerWidth - elementBoundingClientRect.left < 235) {
-                clockStyle.right =  '10px';
+                clockStyle.right = '10px';
             }
-            if ($window.innerHeight - elementBoundingClientRect.bottom  < 60){
+            if ($window.innerHeight - elementBoundingClientRect.bottom < 60) {
                 clockStyle.marginTop = '-105px';
             }
-            
+
             scope.clock.style = clockStyle;
+        }
+
+        let isAttributeSet = attribute => {
+            return !(typeof attributes[attribute] === undefined || typeof attributes[attribute] === 'undefined');
         }
 
         scope.time = {
@@ -82,7 +86,7 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
 
         scope.clock = {
             minuteHand: { 'transform': `rotate(${date.minuteToDegree(15)}deg)` },
-            hourHand: { 'transform': `rotate(${date.hourToDegree(12)}deg)` },
+            hourHand: { 'transform': `rotate(${date.hourToDegree(0)}deg)` },
             update: () => {
                 scope.clock.minuteHand = { 'transform': `rotate(${date.minuteToDegree(scope.time.minute)}deg)` };
                 scope.clock.hourHand = { 'transform': `rotate(${date.hourToDegree(scope.time.hour)}deg)` };
@@ -104,6 +108,7 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             },
             style: {},
             opened: false,
+            disabled: isAttributeSet('disabled'),
         }
 
         scope.prevent = () => {
@@ -111,16 +116,15 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
         }
 
         $document.bind('keypress, keydown', event => {
-            console.log(event.which, event.which == 27);
             if (event.which == 27) { // escape
                 scope.$apply(scope.clock.close())
-                console.log(scope.clock.opened);
             }
             if (event.which == 13) {
                 scope.$apply(scope.clock.done());
             }
         });
 
+        
         let destroy = () => {
             $document.unbind('keypress');
         }
@@ -133,7 +137,8 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
     let template = (element, attribute) =>
         `
     <div class="clockpicker-wrapper">
-    <div class="clock-preview"
+    <div class="clock-preview-wrapper" ng-class="{'disabled':clock.disabled}">
+    <div class="clock-preview"         
          ng-click="clock.toggle()" 
          title="{{cpModel}}">
         <svg viewBox="0 0 100 100">
@@ -143,6 +148,8 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
                 <line y1="2" y2="-40" ng-style="clock.minuteHand" class="minute-hand" title="{{clock.minuteHand}}"></line>
             </g>
         </svg>
+    </div>
+    <label ng-if="cpLabel" ng-attr-title="{{cpLabel}}"  ng-click="clock.toggle()" class="clockpicker-label" ng-bind="cpLabel"></label>
     </div>
     <div class="clockpicker" 
          ng-form name="clockpicker" 
@@ -171,6 +178,7 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             cpModel: '=?',
             cpPlaceholder: '@?',
             cpStringfyResult: '@?',
+            cpLabel: '@?',            
         },
         template,
         link,

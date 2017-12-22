@@ -1,7 +1,7 @@
 
 /*clockpicker*/
 .clock-preview {
-    position: relative;
+    position: absolute;
     width: 40px;
     box-shadow: 0px 0px 1px 0px #acacac;
     border-radius: 2px;
@@ -21,7 +21,14 @@
     box-shadow: 0px 0px 10px 0px #acacac;
     padding: 10px;
     border-radius: 3px;
-    margin: 10px 0px;
+    margin: 5px 0px;
+    z-index: 99;
+}
+
+.clockpicker-wrapper .clockpicker-label {
+    margin: 0px 45px;
+    font: 14px/40px monospace;
+    color: #acacac;
 }
 
 .clock {
@@ -71,7 +78,7 @@
 
 .clock line.hour-hand {
     stroke: #333;
-    stroke-width: 1.5;
+    stroke-width: 1;
 }
 
 .clock line.minute-hand {
@@ -112,4 +119,14 @@ i.button {
 
 i.button:hover{
     background-color:#333;
+}
+
+.clock-preview-wrapper {
+    display: block;
+    height: 40px;
+    position:relative;
+}
+
+.clock-preview-wrapper.disabled {
+    pointer-events: none;
 }
