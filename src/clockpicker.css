@@ -1,0 +1,115 @@
+
+/*clockpicker*/
+.clock-preview {
+    position: relative;
+    width: 40px;
+    box-shadow: 0px 0px 1px 0px #acacac;
+    border-radius: 2px;
+    margin: 0px 10px 0px 1px;
+    cursor: pointer;
+}
+
+.clock-preview:active {
+    transform:scale(.98);
+    box-shadow: 0px 0px 2px 0px #acacac;
+}
+
+.clockpicker {
+    position: fixed;
+    display: flex;
+    background: #fff;
+    box-shadow: 0px 0px 10px 0px #acacac;
+    padding: 10px;
+    border-radius: 3px;
+    margin: 10px 0px;
+}
+
+.clock {
+}
+
+.clock line {
+    width: 1px;
+    display: block;
+    transform: rotate(0deg);
+    transform-origin: bottom;
+    position: absolute;
+    transition: transform .5s;
+    margin: 12px 15px;
+    bottom: 0px;
+}
+
+.clock line.hour-hand {
+    height: 10px;
+    background-color: #333;
+    transform: rotate(0deg);
+}
+
+.clock line.minute-hand {
+    height: 15px;
+    background-color: #333;
+    transform: rotate(45deg);
+}
+
+.cp-item {
+    width: 50px;
+    box-shadow: 0px 0px 1px 0px #acacac;
+    margin: 0px 10px;
+    text-align: center;
+    padding: 5px;
+}
+
+.cp-item input {
+    width: 100% !important;
+    border: none;
+    outline: none;
+    text-align: center;
+    margin: 0px !important;
+    font: 16px/16px monospace;
+    height: 100%;
+    box-shadow: 0px 0px 0px 0px !important;
+}
+
+.clock line.hour-hand {
+    stroke: #333;
+    stroke-width: 1.5;
+}
+
+.clock line.minute-hand {
+    stroke: #333;
+    stroke-width: 1;
+}
+
+.clockpicker-wrapper #clockpicker-input::-webkit-inner-spin-button {
+    display: none;
+}
+
+.clock-splitter {
+    font: 16px/34px monospace;
+}
+
+svg {
+    width: 100%;
+    vertical-align: middle;
+}
+
+circle.clock-frame {
+    stroke: #acacac;
+    fill: #fff;
+    stroke-width: 3px;
+    r: 40;
+}
+
+.clockpicker button {max-height: 30px;padding: 5px;}
+
+i.button {
+    font: 14px/14px monospace;
+    background-color: #b5b3b3;
+    color: #fff;
+    padding: 13px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+i.button:hover{
+    background-color:#333;
+}
