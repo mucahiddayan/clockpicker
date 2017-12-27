@@ -141,7 +141,7 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             },
             label:{
                 style:{
-                    'margin':'0px '+( ( scope.cpSize * FOURFIFTHS ) + 5 )+'px;'
+                    'margin':'0px '+( ( scope.cpSize * 2 ) + 5 )+'px'
                 }
             },
             viewBox: `0 0 ${scope.cpSize * 2} ${scope.cpSize * 2}`,
