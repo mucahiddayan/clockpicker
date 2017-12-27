@@ -124,6 +124,10 @@ i.button:hover{
     position:relative;
 }
 
-.clock-preview-wrapper.disabled {
+.disabled {
     pointer-events: none;
+}
+
+.active{
+    z-index:999999;
 }

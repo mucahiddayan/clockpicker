@@ -17,7 +17,9 @@ clockPicker.controller('clockpickerController', ['$scope', ($scope) => {
     };
 }]);
 
-clockPicker.directive('clockpicker', ['$document', '$window', ($document, $window) => {
+let spion;
+
+clockPicker.directive('clockpicker', ['$document', '$window','$timeout', ($document, $window, $timeout) => {
 
     let link = (scope, element, attributes, controllers) => {
 
@@ -94,19 +96,25 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
         };
 
         scope.clock = {
+            active:false,
+            activate: (element)=>{
+                scope.clock.deactivateAll();
+                angular.element(element).addClass('active');
+            },
+            deactivateAll:()=>[].map.call(document.querySelectorAll('.clockpicker'),cp=>angular.element(cp).removeClass('active')),
             minuteHand: {
                 style: { 'transform': `rotate(${date.minuteToDegree(15)}deg)` },
-                y2: (scope.cpSize * (- THREEFIFTHS ))
+                y2: (scope.cpSize * (- (FOURFIFTHS - .05) ))
             },
             hourHand: {
                 style: { 'transform': `rotate(${date.hourToDegree(0)}deg)` },
-                y2: (scope.cpSize * (-(.75)))
+                y2: (scope.cpSize * (- THREEFIFTHS))
             },
             update: () => {
                 scope.clock.minuteHand.style = { 'transform': `rotate(${date.minuteToDegree(scope.time.minute)}deg)` };
                 scope.clock.hourHand.style = { 'transform': `rotate(${date.hourToDegree(scope.time.hour)}deg)` };
             },
-            toggle: () => {
+            toggle: () => {                
                 scope.clock.opened = !scope.clock.opened;
                 style();
             },
@@ -137,7 +145,10 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
                 }
             },
             previewWrapper: {
-                style: { 'height': (scope.cpSize * 2 )+'px' }
+                style: { 
+                    'height': (scope.cpSize * 2 )+'px' ,
+                    'min-width': (scope.cpSize * 2 )+'px',                    
+                }
             },
             label:{
                 style:{
@@ -153,7 +164,7 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             scope.clock.open();
         }
 
-        $document.bind('keypress, keydown', event => {
+        $document.on('keypress, keydown', event => {
             if (event.which == 27) { // escape
                 scope.$apply(scope.clock.close())
             }
@@ -162,9 +173,18 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
             }
         });
 
+        $document.on('click',event=>{
+            if(angular.element(event.target).hasClass('clockpicker')){
+                scope.clock.activate(event.target);
+            }else{
+                scope.clock.deactivateAll();
+            }
+        });
+
 
         let destroy = () => {
-            $document.unbind('keypress');
+            $document.off('keypress');
+            $document.off('click');
         }
 
         scope.$on('$destroy', () => {
@@ -202,9 +222,9 @@ clockPicker.directive('clockpicker', ['$document', '$window', ($document, $windo
     <div class="clockpicker" 
          ng-form name="clockpicker" 
          ng-attr-placeholder="cpPlaceholder" 
-         ng-show="clock.opened" 
-         ng-style="clock.style"
-         ng-attr-data-hour="time.hour"
+         ng-show="clock.opened"
+         ng-style="clock.style"         
+         ng-attr-data-hour="time.hour"         
          ng-attr-data-minute="time.minute">
         <div class="hour-wrapper cp-item">
             <input autofocus type="number" name="hour" id="hour" ng-model-options="{ debounce: 0 }" ng-change="time.validateHour()" ng-model="time.hour"
